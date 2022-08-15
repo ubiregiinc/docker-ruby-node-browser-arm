@@ -1,4 +1,4 @@
-FROM arm64v8/ubuntu:jammy
+FROM ubuntu:jammy
 
 ENV LANG C.UTF-8
 
