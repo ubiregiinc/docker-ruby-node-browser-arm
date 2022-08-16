@@ -1,19 +1,20 @@
-FROM ubuntu:jammy
-
-ENV LANG C.UTF-8
+FROM debian:bullseye
 
 COPY sources.list /etc/apt/sources.list
-RUN apt update && apt install curl -y
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && apt update && apt install -y nodejs
-RUN apt-get install build-essential libncurses5-dev libreadline-dev libssl-dev libyaml-dev libmariadb-dev libsqlite3-dev libxml2-dev libxslt-dev libsasl2-dev libsasl2-2 libmagickwand-dev imagemagick mariadb-client libmagic-dev -y
-RUN apt-get build-dep -y ruby
-RUN apt-get install -y libreadline-dev zlib1g-dev libssl-dev
-RUN apt-get build-dep -y ruby-rmagick ruby-pg ruby-curb
-RUN apt install checkinstall wget -y
 
-RUN cd /tmp && wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz && tar xf openssl-1.1.1n.tar.gz && rm openssl-1.1.1n.tar.gz && cd openssl-1.1.1n &&\
-  ./config --prefix=/opt/openssl-1.1.1n --openssldir=/opt/openssl-1.1.1n shared zlib && make -j9 && make install &&\
-  cd /tmp && rm -rf openssl-1.1.1n && rm -rf /opt/openssl-1.1.1n/certs && ln -s /etc/ssl/certs /opt/openssl-1.1.1n
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update &&\
+  apt install -y chromium chromium-driver git xvfb curl wget checkinstall &&\
+  rm -rf /var/lib/apt/lists/*
+
+RUN apt update && apt install curl -y && \
+  curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && apt update && apt install -y nodejs &&\
+  apt-get install build-essential libncurses5-dev libreadline-dev libssl-dev libyaml-dev libmariadb-dev libsqlite3-dev libxml2-dev libxslt-dev libsasl2-dev libsasl2-2 libmagickwand-dev imagemagick mariadb-client libmagic-dev -y &&\
+  apt-get build-dep -y ruby &&\
+  apt-get install -y libreadline-dev zlib1g-dev libssl-dev &&\
+  apt-get build-dep -y ruby-rmagick ruby-pg ruby-curb &&\
+  rm -rf /var/lib/apt/lists/*
 
 RUN cd /tmp && wget https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.tar.xz && \
   tar xf ruby-2.7.5.tar.xz && rm ruby-2.7.5.tar.xz && cd ruby-2.7.5 && \
@@ -21,6 +22,8 @@ RUN cd /tmp && wget https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.tar.xz &
   cd /tmp && rm -rf ruby-2.7.5
 RUN ruby -v
 
-RUN wget https://github.com/Alex313031/Thorium-Special/releases/download/M106.0.5215.0/thorium-browser_106.0.5215.0_arm64.deb && dpkg -i thorium-browser_106.0.5215.0_arm64.deb ; apt -f install -y && apt install -y xvfb && rm -rf thorium-browser_106.0.5215.0_arm64.deb
+ENV TZ=Asia/Tokyo
+RUN apt update && apt install -y tzdata && gem install foreman && rm -rf /var/lib/apt/lists/*
 
 CMD /bin/bash
+
