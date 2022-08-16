@@ -20,5 +20,7 @@ RUN cd /tmp && wget https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.tar.xz &
   ./configure --with-openssl-dir=/opt/openssl-1.1.1n && make -j9 && make install && \
   cd /tmp && rm -rf ruby-2.7.5
 RUN ruby -v
-RUN apt install chromium-browser chromium-chromedriver xvfb -y
-CMD bash
+
+RUN wget https://github.com/Alex313031/Thorium-Special/releases/download/M106.0.5215.0/thorium-browser_106.0.5215.0_arm64.deb && dpkg -i thorium-browser_106.0.5215.0_arm64.deb ; apt -f install -y && apt install -y xvfb && rm -rf thorium-browser_106.0.5215.0_arm64.deb
+
+CMD /bin/bash
