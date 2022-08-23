@@ -1,4 +1,4 @@
-FROM ruby:2.7.6-bullseye
+FROM ruby:3.0.4-bullseye
 
 ARG DEBIAN_FRONTEND=noninteractive
 
